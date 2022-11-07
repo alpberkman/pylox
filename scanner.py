@@ -1,4 +1,3 @@
-#from lox import Lox
 from tokenType import TokenType
 from token import Token
 
@@ -39,7 +38,7 @@ class Scanner:
 		return self.tokens
 		
 	def isAtEnd(self):
-		return (self.current >= len(self.source))
+		return self.current >= len(self.source)
 		
 	def scanToken(self):
 		c = self.advance()

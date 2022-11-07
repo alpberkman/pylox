@@ -6,7 +6,6 @@ from tokenType import TokenType
 
 
 class AstPrinter:
-	
 	def print(self, expr):
 		return expr.accept(self)
 		

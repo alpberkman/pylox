@@ -2,10 +2,11 @@
 
 import sys
 from scanner import Scanner
-
+from parser import Parser
+from astPrinter import AstPrinter
 
 class Lox:
-	def __self__(self):
+	def __init__(self):
 		self.hadError = False
 		
 	def runFile(self, path):
@@ -29,9 +30,14 @@ class Lox:
 	def run(self, source):
 		scanner = Scanner(source, self)
 		tokens = scanner.scanTokens()
+		parser = Parser(tokens, self)
+		expression = parser.parse()
+		
+		if self.hadError:
+			return
+		
+		print(AstPrinter().print(expression))
 	
-		for token in tokens:
-			print(token)
 		
 	def error(self, line, message):
 		self.report(line, "", message)
