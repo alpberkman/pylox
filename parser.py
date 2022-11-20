@@ -1,11 +1,11 @@
 from tokenType import TokenType
 from grammar import *
-from error import ParseError
+from error import LoxParseError
 
 class Parser:
-	def __init__(self, tokens, interpreter):
+	def __init__(self, tokens, lox):
 		self.tokens = tokens
-		self.interpreter = interpreter
+		self.lox = lox
 		self.current = 0
 		
 	def expression(self):
@@ -111,12 +111,8 @@ class Parser:
 			raise self.error(self.peek(), message)
 	
 	def error(self, token, message):
-		if token.type == TokenType.EOF:
-			self.interpreter.report(token.line, "at end", message)
-		else:
-			self.interpreter.report(token.line, " at '" + token.lexeme + "'", message)
-			
-		return ParseError(token, message)
+		self.lox.error(token, message)
+		return LoxParseError(token, message)
 	
 	def synchronize(self):
 		self.advance()
@@ -147,7 +143,7 @@ class Parser:
 	def parse(self):
 		try:
 			return self.expression()
-		except ParseError:
+		except LoxParseError:
 			return None
 	
 	
