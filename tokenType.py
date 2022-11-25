@@ -47,7 +47,5 @@ class TokenType(enum.Enum):
     TRUE = enum.auto()
     VAR = enum.auto()
     WHILE = enum.auto()
-    
+
     EOF = enum.auto()
-    
-    
