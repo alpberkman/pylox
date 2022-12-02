@@ -29,7 +29,7 @@ class Lox:
                 line = input("> ")
                 self.run(line)
                 self.hadError = False
-            except EOFError:
+            except EOFError as error:
                 break
 
     def run(self, source):

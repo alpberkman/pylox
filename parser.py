@@ -11,7 +11,7 @@ class Parser:
         self.current = 0
 
     def expression(self):
-        return self.equality()
+        return self.assignment()
 
     def equality(self):
         expr = self.comparison()
@@ -157,7 +157,10 @@ class Parser:
     def statement(self):
         if self.match(TokenType.PRINT):
             return self.printStatement()
-        return self.expressionStatement()
+        elif self.match(TokenType.LEFT_BRACE):
+            return Block(self.block())
+        else:
+            return self.expressionStatement()
 
     def printStatement(self):
         value = self.expression()
@@ -186,6 +189,72 @@ class Parser:
                 return self.varDeclaration()
             else:
                 return self.statement()
-        except LoxParseError:
+        except LoxParseError as error:
             self.synchronize()
             return None
+
+    def assignment(self):
+        expr = self.equality()
+        
+        if self.match(TokenType.EQUAL):
+            equals = self.previous()
+            value = self.assignment()
+            
+            if isinstance(expr, Expr.Variable):
+                name = expr.name
+                return Assign(name, value)
+        
+            self.lox.error2(equals, "Invalid assignment target.")
+        
+        return expr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

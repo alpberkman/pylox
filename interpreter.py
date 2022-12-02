@@ -1,10 +1,10 @@
 from tokenType import TokenType
-from error import LoxRuntimeError
-
+from environment import Environment
 
 class Interpreter():
     def __init__(self, lox):
         self.lox = lox
+        self.environment = environment.Environment()
 
     def visitLiteralExpr(self, expr):
         return expr.value
@@ -125,3 +125,44 @@ class Interpreter():
 
     def execute(self, stmt):
         stmt.accept(self)
+    
+    def visitVarStmt(self, stmt):
+        value = None
+        if stmt.initializer != None:
+            value = self.evaluate(stmt.initializer)
+        
+        self.environment.define(stmt.name.lexeme, value)
+        return None
+    
+    def visitVariableExpr(self, expr):
+        return self.environment.get(expr.name)
+
+    def visitAssignExpr(self, expr):
+        value = self.evaluate(expr.value)
+        self.environment.assign(expr.value)
+        return value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
