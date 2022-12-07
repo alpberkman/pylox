@@ -1,6 +1,7 @@
 from tokenType import TokenType
 from environment import Environment
 
+
 class Interpreter():
     def __init__(self, lox):
         self.lox = lox
@@ -68,7 +69,7 @@ class Interpreter():
             return None
 
     def isTruthy(self, object):
-        if object == None:
+        if object is None:
             return False
         elif isinstance(object, (float, int)):
             return True
@@ -78,7 +79,7 @@ class Interpreter():
             return True
 
     def isEqual(self, a, b):
-        if a == None and b == None:
+        if a is None and b is None:
             return True
         elif a == b:
             return True
@@ -105,7 +106,7 @@ class Interpreter():
             self.lox.runtimeError(error)
 
     def stringify(self, object):
-        if object == None:
+        if object is None:
             return "nil"
         elif isinstance(object, (float, int)):
             text = str(object)
@@ -125,15 +126,15 @@ class Interpreter():
 
     def execute(self, stmt):
         stmt.accept(self)
-    
+
     def visitVarStmt(self, stmt):
         value = None
-        if stmt.initializer != None:
+        if stmt.initializer is not None:
             value = self.evaluate(stmt.initializer)
-        
+
         self.environment.define(stmt.name.lexeme, value)
         return None
-    
+
     def visitVariableExpr(self, expr):
         return self.environment.get(expr.name)
 
@@ -141,28 +142,3 @@ class Interpreter():
         value = self.evaluate(expr.value)
         self.environment.assign(expr.value)
         return value
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,7 +2,7 @@ from error import LoxRuntimeError
 
 
 class Environment():
-    def __init__(self, enclosing = None):
+    def __init__(self, enclosing=None):
         self.values = {}
         self.enclosing = enclosing
 
@@ -12,18 +12,19 @@ class Environment():
     def get(self, name):
         if name in self.values:
             return self.values[name]
-        elif self.enclosing != None:
+        elif self.enclosing is not None:
             return self.enclosing.get(name)
         else:
-            raise LoxRuntimeError(name, "Undefined variable '" + name.lexeme + "'.")
-    
+            raise LoxRuntimeError(
+                name, "Undefined variable '" + name.lexeme + "'.")
+
     def assign(self, name, value):
         if name.lexeme in self.values:
             self.values.put(name.lexeme, value)
             return
-        elif self.enclosing != None:
+        elif self.enclosing is not None:
             self.enclosing.assign(name, value)
             return
         else:
-            raise LoxRuntimeError((name, "Undefined variable '" + name.lexeme + "'.")
-    
+            raise LoxRuntimeError(
+                name, "Undefined variable '" + name.lexeme + "'.")

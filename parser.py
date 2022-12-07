@@ -150,9 +150,9 @@ class Parser:
             statements.append(self.declaration())
         return statements
     # try:
-    #	return self.expression()
+    # 	return self.expression()
     # except LoxParseError:
-    #	return None
+    # 	return None
 
     def statement(self):
         if self.match(TokenType.PRINT):
@@ -195,66 +195,15 @@ class Parser:
 
     def assignment(self):
         expr = self.equality()
-        
+
         if self.match(TokenType.EQUAL):
             equals = self.previous()
             value = self.assignment()
-            
+
             if isinstance(expr, Expr.Variable):
                 name = expr.name
                 return Assign(name, value)
-        
+
             self.lox.error2(equals, "Invalid assignment target.")
-        
+
         return expr
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
