@@ -158,6 +158,8 @@ class Parser:
             return self.printStatement()
         elif self.match(TokenType.LEFT_BRACE):
             return Block(self.block())
+        elif self.match(TokenType.IF):
+            return self.ifStatement()
         else:
             return self.expressionStatement()
 
@@ -194,7 +196,7 @@ class Parser:
             return None
 
     def assignment(self):
-        expr = self.equality()
+        expr = self.lox_or()
 
         if self.match(TokenType.EQUAL):
             equals = self.previous()
@@ -217,12 +219,37 @@ class Parser:
         self.consume(TokenType.RIGHT_BRACE, "Expect '}' after block.")
         return statements
     
+    def ifStatement(self):
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.")
+        condition = self.expression()
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.")
+        
+        thenBrach = self.statement()
+        elseBranch = None
+        if self.match(TokenType.ELSE):
+            elseBranch = statement()
+        
+        return If(condition, thenBrach, elseBranch)
     
+    def lox_or(self):
+        expr = self.lox_and()
+        
+        while self.match(TokenType.OR):
+            operator = self.previous()
+            right = self.lox_and()
+            expr = Logical(expr, operator, right)
+        
+        return expr
     
-    
-    
-    
-    
+    def lox_and(self):
+        expr = self.equality()
+        
+        while self.match(TokenType.AND):
+            operator = self.previous()
+            right = self.equality()
+            expr = Logical(expr, operator, right)
+        
+        return expr
     
     
     

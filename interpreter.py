@@ -160,9 +160,25 @@ class Interpreter():
         finally:
             self.environment = previous
     
+    def visitIfStmt(self, stmt):
+        if self.isTruthy(self.evaluate(stmt.condition)):
+            self.execute(stmt.thenBranch)
+        elif stmt.elseBranch is not None:
+            self.execute(stmt.elseBranch)
+        
+        return None
     
-    
-    
+    def visitLogicalExpr(self, expr):
+        left = self.evaluate(expr.left)
+        
+        if expr.operator.type == TokenType.OR:
+            if self.isTruthy(left):
+                return left
+        else:
+            if not self.isTruthy(left):
+                return left
+        
+        return self.evaluate(expr.right)
     
     
     
