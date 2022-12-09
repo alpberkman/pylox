@@ -1,11 +1,12 @@
 from tokenType import TokenType
 from environment import Environment
+from error import LoxRuntimeError
 
 
 class Interpreter():
     def __init__(self, lox):
         self.lox = lox
-        self.environment = environment.Environment()
+        self.environment = Environment()
 
     def visitLiteralExpr(self, expr):
         return expr.value
@@ -140,5 +141,49 @@ class Interpreter():
 
     def visitAssignExpr(self, expr):
         value = self.evaluate(expr.value)
-        self.environment.assign(expr.value)
+        self.environment.assign(expr.name, value)
         return value
+    
+    def visitBlockStmt(self, stmt):
+        self.executeBlock(stmt.statements, Environment(self.environment))
+        return None
+    
+    def executeBlock(self, statements, environment):
+        previous = self.environment
+        
+        try:
+            self.environment = environment
+            
+            for statement in statements:
+                self.execute(statement)
+                
+        finally:
+            self.environment = previous
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

@@ -10,8 +10,8 @@ class Environment():
         self.values[name] = value
 
     def get(self, name):
-        if name in self.values:
-            return self.values[name]
+        if name.lexeme in self.values:
+            return self.values[name.lexeme]
         elif self.enclosing is not None:
             return self.enclosing.get(name)
         else:
@@ -20,7 +20,7 @@ class Environment():
 
     def assign(self, name, value):
         if name.lexeme in self.values:
-            self.values.put(name.lexeme, value)
+            self.values[name.lexeme] = value
             return
         elif self.enclosing is not None:
             self.enclosing.assign(name, value)

@@ -96,8 +96,7 @@ class Parser:
     def advance(self):
         if not self.isAtEnd():
             self.current += 1
-        else:
-            return self.previous
+        return self.previous()
 
     def isAtEnd(self):
         return self.peek().type == TokenType.EOF
@@ -181,6 +180,7 @@ class Parser:
 
         self.consume(TokenType.SEMICOLON,
                      "Expect ';' after variable declaration.")
+
         return Var(name, initializer)
 
     def declaration(self):
@@ -200,10 +200,75 @@ class Parser:
             equals = self.previous()
             value = self.assignment()
 
-            if isinstance(expr, Expr.Variable):
+            if isinstance(expr, Variable):
                 name = expr.name
                 return Assign(name, value)
 
             self.lox.error2(equals, "Invalid assignment target.")
 
         return expr
+    
+    def block(self):
+        statements = []
+        
+        while not self.check(TokenType.RIGHT_BRACE) and not self.isAtEnd():
+            statements.append(self.declaration())
+        
+        self.consume(TokenType.RIGHT_BRACE, "Expect '}' after block.")
+        return statements
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

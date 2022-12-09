@@ -35,14 +35,17 @@ class Lox:
     def run(self, source):
         scanner = Scanner(source, self)
         tokens = scanner.scanTokens()
+        #for token in tokens:
+        #    print(token)
 
         parser = Parser(tokens, self)
         statements = parser.parse()
-
+        #for statement in statements:
+        #    print(statement)
+        
         if self.hadError:
             return
-        # print(AstPrinter().print(expression))
-        # return
+
         interpreter = Interpreter(self)
         interpreter.interpret(statements)
 
@@ -67,10 +70,10 @@ class Lox:
 
 
 if __name__ == "__main__":
-    l = Lox()
+    lox = Lox()
     if len(sys.argv) > 2:
         sys.exit(64)
     elif len(sys.argv) == 2:
-        l.runFile(sys.argv[1])
+        lox.runFile(sys.argv[1])
     else:
-        l.runPrompt()
+        lox.runPrompt()
