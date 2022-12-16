@@ -160,6 +160,10 @@ class Parser:
             return Block(self.block())
         elif self.match(TokenType.IF):
             return self.ifStatement()
+        elif self.match(TokenType.WHILE):
+            return self.whileStatement()
+        elif self.match(TokenType.FOR):
+            return self.forStatement()
         else:
             return self.expressionStatement()
 
@@ -196,7 +200,7 @@ class Parser:
             return None
 
     def assignment(self):
-        expr = self.lox_or()
+        expr = self.or_expr()
 
         if self.match(TokenType.EQUAL):
             equals = self.previous()
@@ -227,21 +231,21 @@ class Parser:
         thenBrach = self.statement()
         elseBranch = None
         if self.match(TokenType.ELSE):
-            elseBranch = statement()
+            elseBranch = self.statement()
         
         return If(condition, thenBrach, elseBranch)
     
-    def lox_or(self):
-        expr = self.lox_and()
+    def or_expr(self):
+        expr = self.and_expr()
         
         while self.match(TokenType.OR):
             operator = self.previous()
-            right = self.lox_and()
+            right = self.and_expr()
             expr = Logical(expr, operator, right)
         
         return expr
     
-    def lox_and(self):
+    def and_expr(self):
         expr = self.equality()
         
         while self.match(TokenType.AND):
@@ -251,14 +255,52 @@ class Parser:
         
         return expr
     
+    def whileStatement(self):
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.")
+        condition = self.expression()
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.")
+        body = self.statement()
+        
+        return While(condition, body)
     
+
     
-    
-    
-    
-    
-    
-    
+    def forStatement(self):
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.")
+        
+        initializer = None
+        if self.match(TokenType.SEMICOLON):
+            initializer = None
+        elif self.match(TokenType.VAR):
+            initializer = self.varDeclaration()
+        else:
+            initializer = self.expressionStatement()
+        
+        condition = None
+        if not self.check(TokenType.SEMICOLON):
+            condition = self.expression()
+        
+        self.consume(TokenType.SEMICOLON, "Expect ';' after loop condition.")
+        
+        increment = None
+        if not self.check(TokenType.RIGHT_PAREN):
+            increment = self.expression()
+        
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.")
+        body = self.statement()
+        
+        if increment is not None:
+            body = Block([body, Expression(increment)])
+        
+        if condition is None:
+            condition = Literal(True)
+        
+        body = While(condition, body)
+        
+        if initializer is not None:
+            body = Block([initializer, body])
+        
+        return body
     
     
     

@@ -70,14 +70,20 @@ class Interpreter():
             return None
 
     def isTruthy(self, object):
-        if object is None:
+        if object is None or object is False:
             return False
-        elif isinstance(object, (float, int)):
-            return True
-        elif isinstance(object, bool):
-            return object
         else:
             return True
+        ## Literal same as the builtin bool() function
+        #if object is None:
+        #    return False
+        #elif isinstance(object, (float, int)):
+        #    return True
+        ## this line should be before the float/int line because bool is an instance of if and it will evaluate
+        #elif isinstance(object, bool): to true even if it is False
+        #    return object
+        #else:
+        #    return True
 
     def isEqual(self, a, b):
         if a is None and b is None:
@@ -180,7 +186,11 @@ class Interpreter():
         
         return self.evaluate(expr.right)
     
-    
+    def visitWhileStmt(self, stmt):
+        while self.isTruthy(self.evaluate(stmt.condition)):
+            self.execute(stmt.body)
+        
+        return None
     
     
     

@@ -11,14 +11,12 @@ class Expression(Stmt):
     def accept(self, visitor):
         return visitor.visitExpressionStmt(self)
 
-
 class Print(Stmt):
     def __init__(self, expression):
         self.expression = expression
 
     def accept(self, visitor):
         return visitor.visitPrintStmt(self)
-
 
 class Var(Stmt):
     def __init__(self, name, initializer):
@@ -27,7 +25,6 @@ class Var(Stmt):
 
     def accept(self, visitor):
         return visitor.visitVarStmt(self)
-
 
 class Block(Stmt):
     def __init__(self, statements):
@@ -44,3 +41,26 @@ class If(Stmt):
     
     def accept(self, visitor):
         return visitor.visitIfStmt(self)
+
+class While(Stmt):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+    
+    def accept(self, visitor):
+        return visitor.visitWhileStmt(self)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

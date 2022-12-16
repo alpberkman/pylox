@@ -1,0 +1,10 @@
+var a = 0; var temp = 5; while( a < temp)   { print a; a = a + 1;  }
+
+var a = 0; var temp = 5; print a ; print temp ; print a < temp ;
+
+
+if(false) print true; else print false;
+
+if( 5 == 6) print 6; else if (5 == 5) print 5;
+
+if( 5 == 6) { print 6 ; } else if(5 == 5) { print 5 ; }
