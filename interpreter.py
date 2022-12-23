@@ -1,6 +1,7 @@
 from tokenType import TokenType
 from environment import Environment
 from error import LoxRuntimeError
+from loxCallable import LoxCallable
 
 
 class Interpreter():
@@ -74,15 +75,15 @@ class Interpreter():
             return False
         else:
             return True
-        ## Literal same as the builtin bool() function
-        #if object is None:
+        # Literal same as the builtin bool() function
+        # if object is None:
         #    return False
-        #elif isinstance(object, (float, int)):
+        # elif isinstance(object, (float, int)):
         #    return True
-        ## this line should be before the float/int line because bool is an instance of if and it will evaluate
-        #elif isinstance(object, bool): to true even if it is False
+        # this line should be before the float/int line because bool is an instance of if and it will evaluate
+        # elif isinstance(object, bool): to true even if it is False
         #    return object
-        #else:
+        # else:
         #    return True
 
     def isEqual(self, a, b):
@@ -149,67 +150,85 @@ class Interpreter():
         value = self.evaluate(expr.value)
         self.environment.assign(expr.name, value)
         return value
-    
+
     def visitBlockStmt(self, stmt):
         self.executeBlock(stmt.statements, Environment(self.environment))
         return None
-    
+
     def executeBlock(self, statements, environment):
         previous = self.environment
-        
+
         try:
             self.environment = environment
-            
+
             for statement in statements:
                 self.execute(statement)
-                
+
         finally:
             self.environment = previous
-    
+
     def visitIfStmt(self, stmt):
         if self.isTruthy(self.evaluate(stmt.condition)):
             self.execute(stmt.thenBranch)
         elif stmt.elseBranch is not None:
             self.execute(stmt.elseBranch)
-        
+
         return None
-    
+
     def visitLogicalExpr(self, expr):
         left = self.evaluate(expr.left)
-        
+
         if expr.operator.type == TokenType.OR:
             if self.isTruthy(left):
                 return left
         else:
             if not self.isTruthy(left):
                 return left
-        
+
         return self.evaluate(expr.right)
-    
+
     def visitWhileStmt(self, stmt):
         while self.isTruthy(self.evaluate(stmt.condition)):
             self.execute(stmt.body)
-        
+
         return None
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    def visitCallExpr(self, expr):
+        callee = self.evaluate(expr.callee)
+        
+        arguments = {}
+        for argument in expr.arguments:
+            arguments.append(self.evaluate(argument))
+        
+        if not isinstance(callee, LoxCallable):
+            raise LoxRuntimeError(expr.paren, "Can only call functions and classes.")
+        
+        function = callee   # this line may cause problem
+        return function.call(self, arguments)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

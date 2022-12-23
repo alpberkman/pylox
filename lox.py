@@ -35,14 +35,14 @@ class Lox:
     def run(self, source):
         scanner = Scanner(source, self)
         tokens = scanner.scanTokens()
-        #for token in tokens:
+        # for token in tokens:
         #    print(token)
 
         parser = Parser(tokens, self)
         statements = parser.parse()
-        #for statement in statements:
+        # for statement in statements:
         #    print(statement)
-        
+
         if self.hadError:
             return
 

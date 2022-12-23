@@ -59,7 +59,7 @@ class Parser:
             right = self.unary()
             return Unary(operator, right)
         else:
-            return self.primary()
+            return self.call()
 
     def primary(self):
         if self.match(TokenType.FALSE):
@@ -213,61 +213,59 @@ class Parser:
             self.lox.error2(equals, "Invalid assignment target.")
 
         return expr
-    
+
     def block(self):
         statements = []
-        
+
         while not self.check(TokenType.RIGHT_BRACE) and not self.isAtEnd():
             statements.append(self.declaration())
-        
+
         self.consume(TokenType.RIGHT_BRACE, "Expect '}' after block.")
         return statements
-    
+
     def ifStatement(self):
         self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.")
         condition = self.expression()
         self.consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.")
-        
+
         thenBrach = self.statement()
         elseBranch = None
         if self.match(TokenType.ELSE):
             elseBranch = self.statement()
-        
+
         return If(condition, thenBrach, elseBranch)
-    
+
     def or_expr(self):
         expr = self.and_expr()
-        
+
         while self.match(TokenType.OR):
             operator = self.previous()
             right = self.and_expr()
             expr = Logical(expr, operator, right)
-        
+
         return expr
-    
+
     def and_expr(self):
         expr = self.equality()
-        
+
         while self.match(TokenType.AND):
             operator = self.previous()
             right = self.equality()
             expr = Logical(expr, operator, right)
-        
+
         return expr
-    
+
     def whileStatement(self):
         self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.")
         condition = self.expression()
         self.consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.")
         body = self.statement()
-        
-        return While(condition, body)
-    
 
-    
+        return While(condition, body)
+
     def forStatement(self):
         self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.")
-        
+
         initializer = None
         if self.match(TokenType.SEMICOLON):
             initializer = None
@@ -275,69 +273,111 @@ class Parser:
             initializer = self.varDeclaration()
         else:
             initializer = self.expressionStatement()
-        
+
         condition = None
         if not self.check(TokenType.SEMICOLON):
             condition = self.expression()
-        
+
         self.consume(TokenType.SEMICOLON, "Expect ';' after loop condition.")
-        
+
         increment = None
         if not self.check(TokenType.RIGHT_PAREN):
             increment = self.expression()
-        
+
         self.consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.")
         body = self.statement()
-        
+
         if increment is not None:
             body = Block([body, Expression(increment)])
-        
+
         if condition is None:
             condition = Literal(True)
-        
+
         body = While(condition, body)
-        
+
         if initializer is not None:
             body = Block([initializer, body])
-        
+
         return body
+
+    def call(self):
+        expr = self.primary()
+        
+        while True:
+            if self.match(TokenType.LEFT_PAREN):
+                expr = self.finishCall(expr)
+            else:
+                break;
+        
+        return expr;
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    def finishCall(self, callee):
+        arguments = {}
+        if not self.check(TokenType.RIGHT_PAREN):
+            while True:
+                if len(arguments) >= 255:
+                    self.error(self.peek(), "Can't have more than 255 arguments.")
+                arguments.add(self.expression())
+                
+                if not self.match(TokenType.COMMA):
+                    break
+        
+        paren = self.consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.")
+        
+        return Call(callee, paren, arguments)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
